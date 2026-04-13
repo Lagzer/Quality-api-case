@@ -53,3 +53,19 @@ TEST_F(QualityServiceTest, SensorHealthDetectsWarningAndUnstable) {
     EXPECT_EQ(service.evaluateSensorHealth({20, 70, 21}), "UNSTABLE");
     EXPECT_EQ(service.evaluateSensorHealth({10, 20, 110}), "ERROR");
 }
+TEST_F(QualityServiceTest, GradeInvalidInputReturnsUgyldig) {
+    EXPECT_EQ(service.calculateGrade(101), "Ugyldig");
+    EXPECT_EQ(service.calculateGrade(-1), "Ugyldig");
+    EXPECT_EQ(service.calculateGrade(0), "Ugyldig");
+}
+
+TEST_F(QualityServiceTest, DiscountNegativeAmountReturnsError) {
+    EXPECT_EQ(service.calculateDiscount({-1, false, "", false, 12}), -1);
+    EXPECT_EQ(service.calculateDiscount({-100, true, "SAVE10", false, 12}), -1);
+}
+
+TEST_F(QualityServiceTest, BookingMaintenanceModeBlocksAll) {
+    EXPECT_FALSE(service.canBookSeats({1, false, 10, true}));
+    EXPECT_FALSE(service.canBookSeats({5, true, 50, true}));
+    EXPECT_FALSE(service.canBookSeats({1, true, 10, true}));
+}
