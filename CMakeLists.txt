@@ -18,10 +18,16 @@ target_include_directories(quality_core PUBLIC include external)
 
 add_executable(quality_api src/main.cpp)
 target_link_libraries(quality_api PRIVATE quality_core)
+if(WIN32)
+    target_link_libraries(quality_api PRIVATE ws2_32)
+endif()
 
 enable_testing()
 add_executable(quality_service_tests tests/quality_service_test.cpp)
 target_link_libraries(quality_service_tests PRIVATE quality_core GTest::gtest_main)
+if(WIN32)
+    target_link_libraries(quality_service_tests PRIVATE ws2_32)
+endif()
 
 include(GoogleTest)
 gtest_discover_tests(quality_service_tests)
